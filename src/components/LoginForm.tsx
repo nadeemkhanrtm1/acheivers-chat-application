@@ -3,21 +3,34 @@
 import { useState } from 'react';
 
 interface LoginFormProps {
-    onLogin: (userName: string) => void;
+    onLogin: (userData: {
+        name: string;
+        email: string;
+        phone: string;
+        experience: string;
+    }) => void;
 }
 
 export default function LoginForm({ onLogin }: LoginFormProps) {
     const [userName, setUserName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [experience, setExperience] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!userName.trim()) return;
+        if (!userName.trim() || !email.trim() || !phone.trim() || !experience) return;
 
         setIsLoading(true);
         // Simulate a brief loading state for better UX
         setTimeout(() => {
-            onLogin(userName.trim());
+            onLogin({
+                name: userName.trim(),
+                email: email.trim(),
+                phone: phone.trim(),
+                experience: experience
+            });
             setIsLoading(false);
         }, 500);
     };
@@ -52,17 +65,18 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
                     </p>
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        {/* Name Field */}
                         <div>
                             <label htmlFor="userName" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                Your Name
+                                Your Name <span className="text-red-500">*</span>
                             </label>
                             <input
                                 id="userName"
                                 type="text"
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
-                                placeholder="Enter your name"
+                                placeholder="Enter your full name"
                                 disabled={isLoading}
                                 className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 
                          bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-slate-100
@@ -71,13 +85,80 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
                          placeholder:text-slate-400 dark:placeholder:text-slate-500"
                                 required
                                 minLength={2}
-                                maxLength={30}
+                                maxLength={50}
                             />
+                        </div>
+
+                        {/* Email Field */}
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                Email Address <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="your.email@example.com"
+                                disabled={isLoading}
+                                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 
+                         bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-slate-100
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                         disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                         placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                required
+                            />
+                        </div>
+
+                        {/* Phone Number Field */}
+                        <div>
+                            <label htmlFor="phone" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                Phone Number <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                id="phone"
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="+1 (555) 000-0000"
+                                disabled={isLoading}
+                                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 
+                         bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-slate-100
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                         disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                         placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                required
+                                minLength={10}
+                                maxLength={15}
+                            />
+                        </div>
+
+                        {/* Experience Dropdown */}
+                        <div>
+                            <label htmlFor="experience" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                Experience Level <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                id="experience"
+                                value={experience}
+                                onChange={(e) => setExperience(e.target.value)}
+                                disabled={isLoading}
+                                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 
+                         bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-slate-100
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                         disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                         appearance-none cursor-pointer"
+                                required
+                            >
+                                <option value="" disabled>Select your experience level</option>
+                                <option value="Fresher">Fresher</option>
+                                <option value="Professional">Professional</option>
+                            </select>
                         </div>
 
                         <button
                             type="submit"
-                            disabled={isLoading || !userName.trim()}
+                            disabled={isLoading || !userName.trim() || !email.trim() || !phone.trim() || !experience}
                             className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl
                        font-semibold shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-purple-700
                        disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105

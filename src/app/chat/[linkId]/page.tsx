@@ -18,7 +18,13 @@ export default function CustomerChat() {
     const params = useParams();
     const vendorId = params.linkId as string; // This is actually the vendor ID now
 
-    const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
+    const [currentUser, setCurrentUser] = useState<{
+        id: string;
+        name: string;
+        email: string;
+        phone: string;
+        experience: string;
+    } | null>(null);
     const [vendorData, setVendorData] = useState<VendorData | null>(null);
     const [roomId, setRoomId] = useState<string>('');
     const [loading, setLoading] = useState(true);
@@ -61,11 +67,22 @@ export default function CustomerChat() {
         }
     };
 
-    const handleLogin = async (userName: string) => {
+    const handleLogin = async (userData: {
+        name: string;
+        email: string;
+        phone: string;
+        experience: string;
+    }) => {
         if (!vendorData) return;
 
         const userId = `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const user = { id: userId, name: userName };
+        const user = {
+            id: userId,
+            name: userData.name,
+            email: userData.email,
+            phone: userData.phone,
+            experience: userData.experience
+        };
 
         // Create a unique room ID for this customer-vendor pair
         const newRoomId = `room_${vendorId}_${userId}`;
@@ -81,7 +98,10 @@ export default function CustomerChat() {
                 vendorName: vendorData.name,
                 vendorEmail: vendorData.email,
                 customerId: userId,
-                customerName: userName,
+                customerName: userData.name,
+                customerEmail: userData.email,
+                customerPhone: userData.phone,
+                customerExperience: userData.experience,
                 createdAt: Date.now(),
                 lastMessage: 'Chat started',
                 lastMessageTime: Date.now(),
